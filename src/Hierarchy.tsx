@@ -19,40 +19,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
 
       const height = (nodes.length + 1) * nodeSize;
 
-      const svg = d3
-        .select(svgRef.current)
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
-        .attr(
-          "style",
-          "max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;"
-        );
-
-      // Create the vertical and horizontal lines for the tree
-      svg
-        .append("g")
-        .attr("fill", "none")
-        .attr("stroke", "#999")
-        .selectAll()
-        .data(root.links())
-        .join("path")
-        .attr(
-          "d",
-          (d) =>
-            `M${d.source.depth * nodeSize},${d.source.data.index! * nodeSize}
-             V${d.target.data.index! * nodeSize}
-             h${nodeSize}`
-        );
-
-      svg
-        .append("text")
-        .attr("dy", "0.32em")
-        .attr("y", -nodeSize)
-        .attr("x", 280)
-        .attr("text-anchor", "end")
-        .attr("font-weight", "bold")
-        .text("Value");
+      const svg = prepareSvg(svgRef, height, root);
 
       // Create the nodes
       const node = svg
@@ -98,3 +65,44 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
 };
 
 export default HierarchyTree;
+
+function prepareSvg(
+  svgRef: React.MutableRefObject<SVGSVGElement | null>,
+  height: number,
+  root: d3.HierarchyNode<RootNode>
+) {
+  const svg = d3
+    .select(svgRef.current)
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
+    .attr(
+      "style",
+      "max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;"
+    );
+
+  // Create the vertical and horizontal lines for the tree
+  svg
+    .append("g")
+    .attr("fill", "none")
+    .attr("stroke", "#999")
+    .selectAll()
+    .data(root.links())
+    .join("path")
+    .attr(
+      "d",
+      (d) => `M${d.source.depth * nodeSize},${d.source.data.index! * nodeSize}
+             V${d.target.data.index! * nodeSize}
+             h${nodeSize}`
+    );
+
+  svg
+    .append("text")
+    .attr("dy", "0.32em")
+    .attr("y", -nodeSize)
+    .attr("x", 280)
+    .attr("text-anchor", "end")
+    .attr("font-weight", "bold")
+    .text("Value");
+  return svg;
+}
