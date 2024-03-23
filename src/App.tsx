@@ -1,35 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useMemo } from "react";
+import "./App.css";
+import { convertToHierarchy } from "./hierarchy.helpers";
+import { hierarchy as testHierarchy } from "./test-data";
+import HierarchyTree from "./Hierarchy";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const hierarchy = useMemo(() => convertToHierarchy(testHierarchy), []);
+  console.log(JSON.stringify(hierarchy, null, 2));
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  return <HierarchyTree data={hierarchy} />;
 }
 
-export default App
+export default App;
