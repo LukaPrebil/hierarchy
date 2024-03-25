@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { RootNode } from "./hierarchy.helpers";
 
 const format = d3.format(",");
-const nodeSize = 20;
+const FONT_SIZE = 14;
+const nodeSize = FONT_SIZE + 10;
 const width = 928;
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
@@ -21,7 +22,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
 
     const svg = prepareSvg(svgRef, height, root);
     console.log("Drawing tree");
-    svg.selectAll("g").remove();
+    svg.selectAll("g").filter("*:not(#links)").remove();
     // Create the nodes
     const nodes = svg
       .append("g")
@@ -114,40 +115,6 @@ function updateLeafNode(
     updateLeaf(element, newLeaf);
     return newRoot;
   });
-  // if (element.classList.contains("skip")) {
-  //   setRoot((prev) => {
-  //     const newRoot = prev.copy();
-  //     const newLeaf = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
-  //     if (clickedLeaf.data.originalValue === undefined)
-  //       newLeaf.data.originalValue = newLeaf.data.value;
-  //     newLeaf.data.value = 0;
-  //     return newRoot;
-  //   });
-  // } else if (element.classList.contains("reset")) {
-  //   setRoot((prev) => {
-  //     const newRoot = prev.copy();
-  //     const node = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
-  //     node.data.value = clickedLeaf.data.originalValue ?? node.data.value;
-  //     delete clickedLeaf.data.originalValue;
-  //     return newRoot;
-  //   });
-  // } else if (element.classList.contains("reverse")) {
-  //   setRoot((prev) => {
-  //     const newRoot = prev.copy();
-  //     const node = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
-  //     if (node.data.originalValue === undefined)
-  //       node.data.originalValue = node.data.value;
-  //     if (!node.data.reversed) {
-  //       node.data.reversed = true;
-  //       console.log("reversing", node.data.value, -node.data.value!);
-  //       node.data.value = -node.data.value!;
-  //     } else {
-  //       node.data.reversed = false;
-  //       console.log("removing flag");
-  //     }
-  //     return newRoot;
-  //   });
-  // }
 }
 
 function updateLeafsUnderNode(
@@ -202,12 +169,14 @@ function prepareSvg(
     .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
     .attr(
       "style",
-      "max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;"
+      `font: ${FONT_SIZE}px sans-serif; overflow: visible;`
     );
 
-  // Create the vertical and horizontal lines for the tree
+  // Create the vertical and horizontal links for the tree
+  svg.selectAll("g").filter("#links").remove();
   svg
     .append("g")
+    .attr("id", "links")
     .attr("fill", "none")
     .attr("stroke", "#999")
     .selectAll()
@@ -220,9 +189,10 @@ function prepareSvg(
              h${nodeSize}`
     );
 
-  svg.selectAll("text").remove();
+  svg.selectAll("text").filter("#value-text").remove();
   svg
     .append("text")
+    .attr("id", "value-text")
     .attr("dy", "0.32em")
     .attr("y", -nodeSize)
     .attr("x", 280)
