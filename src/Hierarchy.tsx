@@ -96,7 +96,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
     });
 
     svgRef.current = svg.node();
-  }, [root]);
+  }, [font, root]);
 
   return <svg ref={svgRef} />;
 };
@@ -172,7 +172,7 @@ function prepareSvg(
     .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
     .attr(
       "style",
-      `font: ${font} ${FONT_SIZE}px sans-serif; overflow: visible;`
+      `font: ${FONT_SIZE}px sans-serif; font-family: ${font}; overflow: visible;`
     );
 
   // Create the vertical and horizontal links for the tree
