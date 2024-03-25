@@ -5,6 +5,7 @@ export type RootNode = {
   children: unknown[];
   value?: number;
   originalValue?: number;
+  reversed?: boolean;
   index?: number;
 };
 
