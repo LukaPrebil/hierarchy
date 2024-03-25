@@ -124,7 +124,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       svgRef.current = svg.node();
   }, [root]);
 
-  return <svg ref={svgRef} width={1600} height={1200} />;
+  return <svg ref={svgRef} />;
 };
 
 export default HierarchyTree;
@@ -136,8 +136,6 @@ function prepareSvg(
 ) {
   const svg = d3
     .select(svgRef.current)
-    .attr("width", width)
-    .attr("height", height)
     .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
     .attr(
       "style",
@@ -159,6 +157,7 @@ function prepareSvg(
              h${nodeSize}`
     );
 
+  svg.selectAll("text").remove();
   svg
     .append("text")
     .attr("dy", "0.32em")
