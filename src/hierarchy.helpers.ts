@@ -4,12 +4,14 @@ export type RootNode = {
   name: string;
   children: unknown[];
   value?: number;
+  originalValue?: number;
   index?: number;
 };
 
 export type Node = {
   name: string;
   value?: number;
+  originalValue?: number;
   children?: Node[];
 };
 
