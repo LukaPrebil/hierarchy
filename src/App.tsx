@@ -14,6 +14,7 @@ function App() {
   const hierarchy = useMemo(() => convertToHierarchy(testHierarchy), []);
 
   const [font, setFont] = useState("Roboto");
+  const [fontSize, setFontSize] = useState(14);
   const [isBold, setIsBold] = useState(false);
 
   const theme = useMemo(
@@ -28,7 +29,9 @@ function App() {
   );
 
   return (
-    <SettingsContext.Provider value={{ font, setFont, isBold, setIsBold }}>
+    <SettingsContext.Provider
+      value={{ font, setFont, fontSize, setFontSize, isBold, setIsBold }}
+    >
       <ThemeProvider theme={theme}>
         <Container>
           <TopBar />

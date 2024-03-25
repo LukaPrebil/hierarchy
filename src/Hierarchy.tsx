@@ -4,13 +4,12 @@ import { RootNode } from "./hierarchy.helpers";
 import { SettingsContext } from "./SettingsContext";
 
 const format = d3.format(",");
-const FONT_SIZE = 14;
-const nodeSize = FONT_SIZE + 10;
 const width = 928;
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const {font} = useContext(SettingsContext);
+  const {font, fontSize} = useContext(SettingsContext);
+  const nodeSize = fontSize + 10;
 
   const [root, setRoot] = useState(() => {
     let i = 0;
@@ -22,7 +21,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
 
     const height = (allNodes.length + 1) * nodeSize;
 
-    const svg = prepareSvg(svgRef, font, height, root);
+    const svg = prepareSvg(svgRef, root, { height, font, fontSize, nodeSize });
     console.log("Drawing tree");
     svg.selectAll("g").filter("*:not(#links)").remove();
     // Create the nodes
@@ -163,16 +162,15 @@ function updateLeaf(element: SVGGElement, leaf: HNode) {
 
 function prepareSvg(
   svgRef: React.MutableRefObject<SVGSVGElement | null>,
-  font: string,
-  height: number,
-  root: d3.HierarchyNode<RootNode>
+  root: d3.HierarchyNode<RootNode>,
+  config: { height: number, font: string; fontSize: number; nodeSize: number },
 ) {
   const svg = d3
     .select(svgRef.current)
-    .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
+    .attr("viewBox", [-config.nodeSize / 2, (-config.nodeSize * 3) / 2, width, config.height])
     .attr(
       "style",
-      `font: ${FONT_SIZE}px sans-serif; font-family: ${font}; overflow: visible;`
+      `font: ${config.fontSize}px sans-serif; font-family: ${config.font}; overflow: visible;`
     );
 
   // Create the vertical and horizontal links for the tree
@@ -187,9 +185,9 @@ function prepareSvg(
     .join("path")
     .attr(
       "d",
-      (d) => `M${d.source.depth * nodeSize},${d.source.data.index! * nodeSize}
-             V${d.target.data.index! * nodeSize}
-             h${nodeSize}`
+      (d) => `M${d.source.depth * config.nodeSize},${d.source.data.index! * config.nodeSize}
+             V${d.target.data.index! * config.nodeSize}
+             h${config.nodeSize}`
     );
 
   svg.selectAll("text").filter("#value-text").remove();
@@ -197,7 +195,7 @@ function prepareSvg(
     .append("text")
     .attr("id", "value-text")
     .attr("dy", "0.32em")
-    .attr("y", -nodeSize)
+    .attr("y", -config.nodeSize)
     .attr("x", 280)
     .attr("text-anchor", "end")
     .attr("font-weight", "bold")

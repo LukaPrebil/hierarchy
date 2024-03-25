@@ -3,6 +3,8 @@ import { createContext } from "react";
 type SettingsContextType = {
     font: string;
     setFont: (font: string) => void;
+    fontSize: number;
+    setFontSize: (fontSize: number) => void;
     isBold: boolean;
     setIsBold: (isBold: boolean) => void;
 }
@@ -10,6 +12,8 @@ type SettingsContextType = {
 export const SettingsContext = createContext<SettingsContextType>({
     font: "Roboto",
     setFont: () => void 0,
+    fontSize: 14,
+    setFontSize: () => void 0,
     isBold: false,
     setIsBold: () => void 0,
 });
