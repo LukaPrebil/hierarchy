@@ -4,6 +4,7 @@ import { hierarchy as testHierarchy } from "./test-data";
 import HierarchyTree from "./Hierarchy";
 import { TopBar } from "./TopBar";
 import { SettingsContext } from "./SettingsContext";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const Container: FC<{ children: ReactNode }> = ({ children }) => {
   return <div className="container">{children}</div>;
@@ -14,16 +15,26 @@ function App() {
 
   const [font, setFont] = useState("Roboto");
   const [isBold, setIsBold] = useState(false);
-  const [isItalic, setIsItalic] = useState(false);
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        typography: {
+          fontFamily: font,
+          fontWeightBold: isBold ? "bold" : "normal",
+        },
+      }),
+    [font, isBold]
+  );
 
   return (
-    <SettingsContext.Provider
-      value={{ font, setFont, isBold, setIsBold, isItalic, setIsItalic }}
-    >
-      <Container>
-        <TopBar />
-        <HierarchyTree data={hierarchy} />
-      </Container>
+    <SettingsContext.Provider value={{ font, setFont, isBold, setIsBold }}>
+      <ThemeProvider theme={theme}>
+        <Container>
+          <TopBar />
+          <HierarchyTree data={hierarchy} />
+        </Container>
+      </ThemeProvider>
     </SettingsContext.Provider>
   );
 }

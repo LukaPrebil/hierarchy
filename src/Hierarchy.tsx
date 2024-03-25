@@ -1,6 +1,7 @@
 import * as d3 from "d3";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { RootNode } from "./hierarchy.helpers";
+import { SettingsContext } from "./SettingsContext";
 
 const format = d3.format(",");
 const FONT_SIZE = 14;
@@ -9,6 +10,7 @@ const width = 928;
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const {font} = useContext(SettingsContext);
 
   const [root, setRoot] = useState(() => {
     let i = 0;
@@ -20,7 +22,7 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
 
     const height = (allNodes.length + 1) * nodeSize;
 
-    const svg = prepareSvg(svgRef, height, root);
+    const svg = prepareSvg(svgRef, font, height, root);
     console.log("Drawing tree");
     svg.selectAll("g").filter("*:not(#links)").remove();
     // Create the nodes
@@ -161,6 +163,7 @@ function updateLeaf(element: SVGGElement, leaf: HNode) {
 
 function prepareSvg(
   svgRef: React.MutableRefObject<SVGSVGElement | null>,
+  font: string,
   height: number,
   root: d3.HierarchyNode<RootNode>
 ) {
@@ -169,7 +172,7 @@ function prepareSvg(
     .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
     .attr(
       "style",
-      `font: ${FONT_SIZE}px sans-serif; overflow: visible;`
+      `font: ${font} ${FONT_SIZE}px sans-serif; overflow: visible;`
     );
 
   // Create the vertical and horizontal links for the tree
