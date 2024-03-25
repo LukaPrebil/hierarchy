@@ -1,14 +1,23 @@
-import { useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import "./App.css";
 import { convertToHierarchy } from "./hierarchy.helpers";
 import { hierarchy as testHierarchy } from "./test-data";
 import HierarchyTree from "./Hierarchy";
+import { TopBar } from "./TopBar";
+
+const Container: FC<{ children: ReactNode }> = ({ children }) => {
+  return <div className="container">{children}</div>;
+};
 
 function App() {
   const hierarchy = useMemo(() => convertToHierarchy(testHierarchy), []);
-  console.log(JSON.stringify(hierarchy, null, 2));
 
-  return <HierarchyTree data={hierarchy} />;
+  return (
+    <Container>
+      <TopBar />
+      <HierarchyTree data={hierarchy} />;
+    </Container>
+  );
 }
 
 export default App;
