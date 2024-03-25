@@ -84,8 +84,11 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       const element = event.target as SVGGElement;
       if (nodeIsLeaf) {
         console.log("clicked leaf", d, event);
-        updateLeaf(element, setRoot, d);
-        return;
+        updateLeafNode(element, setRoot, d);
+      }
+      else {
+        console.log("clicked node", d, event);
+        updateLeafsUnderNode(element, setRoot, d);
       }
     });
 
@@ -100,44 +103,92 @@ export default HierarchyTree;
 type HNode = d3.HierarchyNode<RootNode>;
 
 // TODO turn this into a reducer
-function updateLeaf(
+function updateLeafNode(
   element: SVGGElement,
   setRoot: React.Dispatch<React.SetStateAction<HNode>>,
-  d: HNode
+  clickedLeaf: HNode
 ) {
+  setRoot((prev) => {
+    const newRoot = prev.copy();
+    const newLeaf = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
+    updateLeaf(element, newLeaf);
+    return newRoot;
+  });
+  // if (element.classList.contains("skip")) {
+  //   setRoot((prev) => {
+  //     const newRoot = prev.copy();
+  //     const newLeaf = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
+  //     if (clickedLeaf.data.originalValue === undefined)
+  //       newLeaf.data.originalValue = newLeaf.data.value;
+  //     newLeaf.data.value = 0;
+  //     return newRoot;
+  //   });
+  // } else if (element.classList.contains("reset")) {
+  //   setRoot((prev) => {
+  //     const newRoot = prev.copy();
+  //     const node = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
+  //     node.data.value = clickedLeaf.data.originalValue ?? node.data.value;
+  //     delete clickedLeaf.data.originalValue;
+  //     return newRoot;
+  //   });
+  // } else if (element.classList.contains("reverse")) {
+  //   setRoot((prev) => {
+  //     const newRoot = prev.copy();
+  //     const node = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
+  //     if (node.data.originalValue === undefined)
+  //       node.data.originalValue = node.data.value;
+  //     if (!node.data.reversed) {
+  //       node.data.reversed = true;
+  //       console.log("reversing", node.data.value, -node.data.value!);
+  //       node.data.value = -node.data.value!;
+  //     } else {
+  //       node.data.reversed = false;
+  //       console.log("removing flag");
+  //     }
+  //     return newRoot;
+  //   });
+  // }
+}
+
+function updateLeafsUnderNode(
+  element: SVGGElement,
+  setRoot: React.Dispatch<React.SetStateAction<HNode>>,
+  clickedNode: HNode
+) {
+  setRoot((prev) => {
+    const newRoot = prev.copy();
+    const node = newRoot.find((node) => node.data.index === clickedNode.data.index)!;
+    node.descendants().forEach((descendant) => {
+      if (descendant.children) return; // skip non-leaf nodes as their value gets calculated from children
+      updateLeaf(element, descendant);
+    });
+    return newRoot;
+  });
+}
+
+
+// TODO take leaf.data, return new leaf.data
+function updateLeaf(element: SVGGElement, leaf: HNode) {
   if (element.classList.contains("skip")) {
-    setRoot((prev) => {
-      const newRoot = prev.copy();
-      const node = newRoot.find((node) => node.data.index === d.data.index)!;
-      if (d.data.originalValue === undefined)
-        node.data.originalValue = node.data.value;
-      node.data.value = 0;
-      return newRoot;
-    });
-  } else if (element.classList.contains("reset")) {
-    setRoot((prev) => {
-      const newRoot = prev.copy();
-      const node = newRoot.find((node) => node.data.index === d.data.index)!;
-      node.data.value = d.data.originalValue ?? node.data.value;
-      delete d.data.originalValue;
-      return newRoot;
-    });
-  } else if (element.classList.contains("reverse")) {
-    setRoot((prev) => {
-      const newRoot = prev.copy();
-      const node = newRoot.find((node) => node.data.index === d.data.index)!;
-      if (node.data.originalValue === undefined)
-        node.data.originalValue = node.data.value;
-      if (!node.data.reversed) {
-        node.data.reversed = true;
-        console.log("reversing", node.data.value, -node.data.value!);
-        node.data.value = -node.data.value!;
-      } else {
-        node.data.reversed = false;
-        console.log("removing flag");
-      }
-      return newRoot;
-    });
+    if (leaf.data.originalValue === undefined)
+      leaf.data.originalValue = leaf.data.value;
+    leaf.data.value = 0;
+  }
+  if (element.classList.contains("reset")) {
+    leaf.data.value = leaf.data.originalValue ?? leaf.data.value;
+    delete leaf.data.originalValue;
+  }
+  if (element.classList.contains("reverse")) {
+    if (leaf.data.originalValue === undefined)
+      leaf.data.originalValue = leaf.data.value;
+    if (!leaf.data.reversed) {
+      leaf.data.reversed = true;
+      console.log("reversing", leaf.data.value, -leaf.data.value!);
+      leaf.data.value = -leaf.data.value!;
+    } else {
+      leaf.data.reversed = false;
+      console.log("removing flag");
+    }
   }
 }
 
