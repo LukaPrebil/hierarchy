@@ -15,7 +15,7 @@ function App() {
   return (
     <Container>
       <TopBar />
-      <HierarchyTree data={hierarchy} />;
+      <HierarchyTree data={hierarchy} />
     </Container>
   );
 }
