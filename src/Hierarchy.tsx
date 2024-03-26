@@ -54,10 +54,10 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       .attr("dy", "0.32em")
       .attr("x", 280)
       .attr("text-anchor", "end")
-      .data(root.sum((node) => node.value ?? 0))
-      .text((d) => format(d.data.value ?? d.value ?? 0))
+      .data(root.sum((d) => d.value!))
+      .text((d) => format(d.value!))
       .attr("fill", (d) => {
-        if (highlightNegatives && d.data.value! < 0) {
+        if (highlightNegatives && (d.value! < 0)) {
           return theme.palette.error.main;
         } else if (d.children) {
           return theme.palette.text.secondary;
@@ -69,23 +69,23 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
     nodes
       .append("path")
       .attr("class", "reset")
-      .attr("d", d3.symbol(d3.symbolAsterisk).size(nodeSize))
-      .attr("transform", "translate(100,0)")
-      .attr("stroke", "black");
+      .attr("d", d3.symbol(d3.symbolSquare).size(nodeSize))
+      .attr("transform", "translate(305,0)")
+      .attr("fill", "black");
 
     nodes
       .append("path")
       .attr("class", "skip")
-      .attr("d", d3.symbol(d3.symbolAsterisk).size(nodeSize))
-      .attr("transform", "translate(110,0)")
-      .attr("stroke", "black");
+      .attr("d", d3.symbol(d3.symbolCircle).size(nodeSize))
+      .attr("transform", "translate(320,0)")
+      .attr("fill", "black");
 
     nodes
       .append("path")
       .attr("class", "reverse")
-      .attr("d", d3.symbol(d3.symbolAsterisk).size(nodeSize))
-      .attr("transform", "translate(120,0)")
-      .attr("stroke", "black");
+      .attr("d", d3.symbol(d3.symbolStar).size(nodeSize))
+      .attr("transform", "translate(335,0)")
+      .attr("fill", "black");
 
     nodes.on("click", (event: PointerEvent, d) => {
       event.preventDefault();
@@ -216,6 +216,7 @@ function prepareSvg(
     );
 
   svg.selectAll("text").filter("#value-text").remove();
+  svg.selectAll("text").filter("#actions-text").remove();
   svg
     .append("text")
     .attr("id", "value-text")
@@ -225,5 +226,15 @@ function prepareSvg(
     .attr("text-anchor", "end")
     .attr("font-weight", "bold")
     .text("Value");
+
+  svg
+    .append("text")
+    .attr("id", "actions-text")
+    .attr("dy", "0.32em")
+    .attr("y", -config.nodeSize)
+    .attr("x", 340)
+    .attr("text-anchor", "end")
+    .attr("font-weight", "bold")
+    .text("Actions");
   return svg;
 }

@@ -21,7 +21,7 @@ export type Node = {
  * @param data Input to exercise
  */
 export function convertToHierarchy(data: TreeNode): RootNode {
-  const root: RootNode = { name: "root", children: [] };
+  const root: RootNode = { name: "Total", children: [] };
 
   data.forEach((node) => {
     root.children.push(convertNode(node));

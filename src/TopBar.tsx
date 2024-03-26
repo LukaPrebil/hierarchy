@@ -47,6 +47,7 @@ export const TopBar: React.FC = () => {
             <TextField
               label="Font Size"
               type="number"
+              color="secondary"
               sx={{margin: "1rem"}}
               value={fontSize}
               onChange={(e) => setFontSize(parseInt(e.target.value))}
