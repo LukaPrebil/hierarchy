@@ -1,5 +1,7 @@
-import { InputLabel, MenuItem, Select } from "@mui/material";
 import React from "react";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 type FontPickerProps = {
     font: string;
@@ -18,6 +20,7 @@ export const FontPicker: React.FC<FontPickerProps> = ({font, setFont}) => {
       <Select
         labelId="font-select-label"
         id="font-select"
+        autoWidth
         value={font}
         label="Font"
         onChange={(e) => setFont(e.target.value)}

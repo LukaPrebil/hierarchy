@@ -2,14 +2,17 @@ import * as d3 from "d3";
 import { useContext, useEffect, useRef, useState } from "react";
 import { RootNode } from "./hierarchy.helpers";
 import { SettingsContext } from "./SettingsContext";
+import { useTheme } from "@mui/material/styles";
 
 const format = d3.format(",");
 const width = 928;
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const {font, fontSize} = useContext(SettingsContext);
+  const { font, fontSize, highlightNegatives } = useContext(SettingsContext);
   const nodeSize = fontSize + 10;
+
+  const theme = useTheme();
 
   const [root, setRoot] = useState(() => {
     let i = 0;
@@ -51,13 +54,18 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       .attr("dy", "0.32em")
       .attr("x", 280)
       .attr("text-anchor", "end")
-      .attr("fill", (d) => (d.children ? null : "#555"))
-      .data(
-        root
-          // .copy()
-          .sum((node) => node.value ?? 0)
-      )
-      .text((d) => format(d.data.value ?? d.value ?? 0));
+      .data(root.sum((node) => node.value ?? 0))
+      .text((d) => format(d.data.value ?? d.value ?? 0))
+      .attr("fill", (d) => {
+        if (highlightNegatives && d.data.value! < 0) {
+          console.log("highlighting negative", d.data.value!);
+          return theme.palette.error.main;
+        } else if (d.children) {
+          return theme.palette.text.secondary;
+        } else {
+          return theme.palette.text.primary;
+        }
+      });
 
     nodes
       .append("path")
@@ -87,15 +95,23 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       if (nodeIsLeaf) {
         console.log("clicked leaf", d, event);
         updateLeafNode(element, setRoot, d);
-      }
-      else {
+      } else {
         console.log("clicked node", d, event);
         updateLeafsUnderNode(element, setRoot, d);
       }
     });
 
     svgRef.current = svg.node();
-  }, [font, root]);
+  }, [
+    font,
+    fontSize,
+    nodeSize,
+    root,
+    highlightNegatives,
+    theme.palette.error.main,
+    theme.palette.text.primary,
+    theme.palette.text.secondary,
+  ]);
 
   return <svg ref={svgRef} />;
 };
@@ -112,7 +128,9 @@ function updateLeafNode(
 ) {
   setRoot((prev) => {
     const newRoot = prev.copy();
-    const newLeaf = newRoot.find((node) => node.data.index === clickedLeaf.data.index)!;
+    const newLeaf = newRoot.find(
+      (node) => node.data.index === clickedLeaf.data.index
+    )!;
     updateLeaf(element, newLeaf);
     return newRoot;
   });
@@ -125,7 +143,9 @@ function updateLeafsUnderNode(
 ) {
   setRoot((prev) => {
     const newRoot = prev.copy();
-    const node = newRoot.find((node) => node.data.index === clickedNode.data.index)!;
+    const node = newRoot.find(
+      (node) => node.data.index === clickedNode.data.index
+    )!;
     node.descendants().forEach((descendant) => {
       if (descendant.children) return; // skip non-leaf nodes as their value gets calculated from children
       updateLeaf(element, descendant);
@@ -133,7 +153,6 @@ function updateLeafsUnderNode(
     return newRoot;
   });
 }
-
 
 // TODO take leaf.data, return new leaf.data
 function updateLeaf(element: SVGGElement, leaf: HNode) {
@@ -163,11 +182,16 @@ function updateLeaf(element: SVGGElement, leaf: HNode) {
 function prepareSvg(
   svgRef: React.MutableRefObject<SVGSVGElement | null>,
   root: d3.HierarchyNode<RootNode>,
-  config: { height: number, font: string; fontSize: number; nodeSize: number },
+  config: { height: number; font: string; fontSize: number; nodeSize: number }
 ) {
   const svg = d3
     .select(svgRef.current)
-    .attr("viewBox", [-config.nodeSize / 2, (-config.nodeSize * 3) / 2, width, config.height])
+    .attr("viewBox", [
+      -config.nodeSize / 2,
+      (-config.nodeSize * 3) / 2,
+      width,
+      config.height,
+    ])
     .attr(
       "style",
       `font: ${config.fontSize}px sans-serif; font-family: ${config.font}; overflow: visible;`
@@ -185,7 +209,9 @@ function prepareSvg(
     .join("path")
     .attr(
       "d",
-      (d) => `M${d.source.depth * config.nodeSize},${d.source.data.index! * config.nodeSize}
+      (d) => `M${d.source.depth * config.nodeSize},${
+        d.source.data.index! * config.nodeSize
+      }
              V${d.target.data.index! * config.nodeSize}
              h${config.nodeSize}`
     );

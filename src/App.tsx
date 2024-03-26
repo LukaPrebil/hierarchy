@@ -16,6 +16,7 @@ function App() {
   const [font, setFont] = useState("Roboto");
   const [fontSize, setFontSize] = useState(14);
   const [isBold, setIsBold] = useState(false);
+  const [highlightNegatives, setHighlightNegatives] = useState(false);
 
   const theme = useMemo(
     () =>
@@ -30,7 +31,16 @@ function App() {
 
   return (
     <SettingsContext.Provider
-      value={{ font, setFont, fontSize, setFontSize, isBold, setIsBold }}
+      value={{
+        font,
+        setFont,
+        fontSize,
+        setFontSize,
+        isBold,
+        setIsBold,
+        highlightNegatives,
+        setHighlightNegatives,
+      }}
     >
       <ThemeProvider theme={theme}>
         <Container>
