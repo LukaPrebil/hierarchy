@@ -58,7 +58,6 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
       .text((d) => format(d.data.value ?? d.value ?? 0))
       .attr("fill", (d) => {
         if (highlightNegatives && d.data.value! < 0) {
-          console.log("highlighting negative", d.data.value!);
           return theme.palette.error.main;
         } else if (d.children) {
           return theme.palette.text.secondary;
