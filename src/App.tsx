@@ -1,20 +1,39 @@
-import { FC, ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { convertToHierarchy } from "./hierarchy.helpers";
 import { hierarchy as testHierarchy } from "./test-data";
 import HierarchyTree from "./Hierarchy";
 import { TopBar } from "./TopBar";
 import { SettingsContext } from "./SettingsContext";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
+import Container from "@mui/material/Container";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import Paper from "@mui/material/Paper";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { FontPicker } from "./FontPicker";
+import TextField from "@mui/material/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import { generateTestData } from "./bigHierarchy.generator.ts";
 
-const Container: FC<{ children: ReactNode }> = ({ children }) => {
-  return <div className="container">{children}</div>;
-};
+const testData = generateTestData(10000, 10);
+console.log(testData);
+
+const GridItem = styled(Paper)(({ theme }) => ({
+  ...theme.typography.body2,
+  padding: theme.spacing("2rem"),
+  textAlign: "left",
+  color: theme.palette.text.secondary,
+}));
 
 function App() {
-  const hierarchy = useMemo(() => convertToHierarchy(testHierarchy), []);
+  const hierarchy = useMemo(() => convertToHierarchy(testData), []);
 
   const [font, setFont] = useState("Roboto");
-  const [fontSize, setFontSize] = useState(14);
+  const [fontSize, setFontSize] = useState(12);
   const [isBold, setIsBold] = useState(false);
   const [highlightNegatives, setHighlightNegatives] = useState(false);
 
@@ -24,9 +43,10 @@ function App() {
         typography: {
           fontFamily: font,
           fontWeightBold: isBold ? "bold" : "normal",
+          fontSize: fontSize,
         },
       }),
-    [font, isBold]
+    [font, fontSize, isBold]
   );
 
   return (
@@ -43,9 +63,72 @@ function App() {
       }}
     >
       <ThemeProvider theme={theme}>
-        <Container>
-          <TopBar />
-          <HierarchyTree data={hierarchy} />
+        <TopBar />
+        <Container maxWidth="xl">
+          <Grid2 container spacing={2}>
+            <Grid2 sm={12} md={7}>
+              <GridItem>
+                <HierarchyTree data={hierarchy} />
+              </GridItem>
+            </Grid2>
+            <Grid2 sm={5} md={2}>
+              <GridItem>
+                <h2>Node modifiers (legend)</h2>
+                <Divider />
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Square: Reset node" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Circle: Skip node" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Star: Invert node" />
+                  </ListItem>
+                </List>
+              </GridItem>
+            </Grid2>
+            <Grid2 sm={7} md={3}>
+              <GridItem>
+                <h2>Page modifiers</h2>
+                <Divider />
+                <FormControl>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        value={highlightNegatives}
+                        onChange={(e) =>
+                          setHighlightNegatives(e.target.checked)
+                        }
+                      />
+                    }
+                    label="Highlight negatives"
+                  />
+                  <FontPicker font={font} setFont={setFont} />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        value={isBold}
+                        onChange={(e) => setIsBold(e.target.checked)}
+                      />
+                    }
+                    label="Bold"
+                  />
+                  <FormControlLabel
+                    control={
+                      <TextField
+                        type="number"
+                        color="secondary"
+                        value={fontSize}
+                        onChange={(e) => setFontSize(parseInt(e.target.value))}
+                      />
+                    }
+                    label="Font Size"
+                  />
+                </FormControl>
+              </GridItem>
+            </Grid2>
+          </Grid2>
         </Container>
       </ThemeProvider>
     </SettingsContext.Provider>

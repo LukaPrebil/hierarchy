@@ -1,7 +1,7 @@
 import React from "react";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { FormControlLabel } from "@mui/material";
 
 type FontPickerProps = {
     font: string;
@@ -16,19 +16,19 @@ export const FontPicker: React.FC<FontPickerProps> = ({font, setFont}) => {
 
   return (
     <>
-      <InputLabel id="font-select-label">Font</InputLabel>
-      <Select
-        labelId="font-select-label"
-        id="font-select"
-        autoWidth
-        value={font}
+      <FormControlLabel
         label="Font"
-        onChange={(e) => setFont(e.target.value)}
-      >
-        {[...fonts].map((font) => (
-            <MenuItem key={font} value={font}>{font}</MenuItem>
-        ))}
-      </Select>
+        control={
+          <Select
+            id="font-select"
+            value={font}
+            onChange={(e) => setFont(e.target.value)}
+          >
+            {[...fonts].map((font) => (
+                <MenuItem key={font} value={font}>{font}</MenuItem>
+            ))}
+          </Select>
+        } />
     </>
   );
 };

@@ -4,8 +4,8 @@ import { RootNode } from "./hierarchy.helpers";
 import { SettingsContext } from "./SettingsContext";
 import { useTheme } from "@mui/material/styles";
 
-const format = d3.format(",");
-const width = 928;
+const format = d3.format(",.2f");
+const width = 380;
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
