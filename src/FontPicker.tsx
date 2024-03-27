@@ -2,17 +2,15 @@ import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { FormControlLabel } from "@mui/material";
+import { useFonts } from "./useFonts";
 
 type FontPickerProps = {
-    font: string;
-    setFont: (font: string) => void;
-}
+  font: string;
+  setFont: (font: string) => void;
+};
 
-export const FontPicker: React.FC<FontPickerProps> = ({font, setFont}) => {
-  const fonts = React.useMemo(() => {
-    const fonts = document.fonts.values();
-    return new Set([...fonts].map((font) => font.family));
-  }, []);
+export const FontPicker: React.FC<FontPickerProps> = ({ font, setFont }) => {
+  const fonts = useFonts();
 
   return (
     <>
@@ -25,10 +23,13 @@ export const FontPicker: React.FC<FontPickerProps> = ({font, setFont}) => {
             onChange={(e) => setFont(e.target.value)}
           >
             {[...fonts].map((font) => (
-                <MenuItem key={font} value={font}>{font}</MenuItem>
+              <MenuItem key={font} value={font}>
+                {font}
+              </MenuItem>
             ))}
           </Select>
-        } />
+        }
+      />
     </>
   );
 };
