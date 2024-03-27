@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { FontPicker } from "./FontPicker";
 
 describe("FontPicker", () => {
-  vi.mock("./useFonts", () => ({
+  vi.mock("../hooks/useFonts", () => ({
     useFonts: () => new Set(["Roboto", "Inter"]),
   }));
   test("FontPicker is defined", () => {
