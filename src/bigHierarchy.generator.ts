@@ -15,12 +15,12 @@ function generateLeafNode(): LeafNode {
 
 function generateInnerNode(maxDepth: number, currentDepth: number): InnerNode {
   const node: InnerNode = {};
-  const numChildren = generateRandomNumber(1, 10);
+  const numChildren = generateRandomNumber(4, 10);
 
   for (let i = 0; i < numChildren; i++) {
     const key = `Q${generateRandomNumber(1, 10)}`;
-    node[key] = [];
-    if (currentDepth < maxDepth && Math.random() < 0.3) {
+    node[key] = node[key] ?? [];
+    if (currentDepth < maxDepth && Math.random() < 0.1) {
       node[key].push(generateInnerNode(maxDepth, currentDepth + 1));
     } else {
       node[key].push(generateLeafNode());
@@ -34,7 +34,7 @@ export function generateTestData(numNodes: number, maxDepth: number): TreeNode {
   const testData: TreeNode = [];
 
   for (let i = 0; i < numNodes; i++) {
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.3) {
       testData.push(generateInnerNode(maxDepth, 1));
     } else {
       testData.push(generateLeafNode());
