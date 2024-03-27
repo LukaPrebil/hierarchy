@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { RootNode } from "./hierarchy.helpers";
+import { RootNode } from "./utils/hierarchy.helpers";
 import { SettingsContext } from "./SettingsContext";
 import { useTheme } from "@mui/material/styles";
 
@@ -129,7 +129,7 @@ type HNode = d3.HierarchyNode<RootNode>;
 function updateLeafNode(
   element: SVGGElement,
   setUpdateId: React.Dispatch<React.SetStateAction<number>>,
-  clickedLeaf: HNode
+  clickedLeaf: HNode,
 ) {
   updateLeaf(element, clickedLeaf);
   setUpdateId((prev) => prev + 1);
@@ -138,7 +138,7 @@ function updateLeafNode(
 function updateLeafsUnderNode(
   element: SVGGElement,
   setUpdateId: React.Dispatch<React.SetStateAction<number>>,
-  clickedNode: HNode
+  clickedNode: HNode,
 ) {
   clickedNode.descendants().forEach((descendant) => {
     if (descendant.children) return; // skip non-leaf nodes as their value gets calculated from children
@@ -175,7 +175,7 @@ function updateLeaf(element: SVGGElement, leaf: HNode) {
 function prepareSvg(
   svgRef: React.MutableRefObject<SVGSVGElement | null>,
   root: d3.HierarchyNode<RootNode>,
-  config: { height: number; nodeHeight: number }
+  config: { height: number; nodeHeight: number },
 ) {
   const svg = d3
     .select(svgRef.current)
@@ -203,7 +203,7 @@ function prepareSvg(
         d.source.data.index! * config.nodeHeight
       }
              V${d.target.data.index! * config.nodeHeight}
-             h${config.nodeHeight}`
+             h${config.nodeHeight}`,
     );
 
   svg.selectAll("text").filter("#value-text").remove();

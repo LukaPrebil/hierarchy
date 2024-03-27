@@ -10,7 +10,7 @@ function generateRandomFloat(min: number, max: number): number {
 
 function generateLeafNode(): LeafNode {
   const randomNumber = generateRandomFloat(-10, 100);
-  return { [`w${generateRandomNumber(0,4)}`]: randomNumber };
+  return { [`w${generateRandomNumber(0, 4)}`]: randomNumber };
 }
 
 function generateInnerNode(maxDepth: number, currentDepth: number): InnerNode {

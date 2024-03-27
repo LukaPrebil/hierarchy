@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { FontPicker } from "./FontPicker";
 
 describe("FontPicker", () => {
-
   vi.mock("./useFonts", () => ({
     useFonts: () => new Set(["Roboto", "Inter"]),
   }));
@@ -14,9 +13,7 @@ describe("FontPicker", () => {
   test("FontPicker renders with default font", () => {
     const font = "Roboto";
     const setFont = vi.fn();
-    const { getByText } = render(
-      <FontPicker font={font} setFont={setFont} />
-    );
+    const { getByText } = render(<FontPicker font={font} setFont={setFont} />);
 
     expect(getByText(font)).toBeDefined();
   });
@@ -24,9 +21,7 @@ describe("FontPicker", () => {
   test("FontPicker default matches snapshot", () => {
     const font = "Roboto";
     const setFont = vi.fn();
-    const rendered = render(
-      <FontPicker font={font} setFont={setFont} />
-    );
+    const rendered = render(<FontPicker font={font} setFont={setFont} />);
 
     expect(rendered.asFragment()).toMatchSnapshot();
   });

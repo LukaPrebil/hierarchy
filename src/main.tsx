@@ -11,6 +11,6 @@ import "@fontsource/inter";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <CssBaseline />
-      <App />
-  </React.StrictMode>
+    <App />
+  </React.StrictMode>,
 );

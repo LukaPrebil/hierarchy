@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { convertToHierarchy } from "./hierarchy.helpers";
-import { hierarchy as testHierarchy } from "./test-data";
+import { convertToHierarchy } from "./utils/hierarchy.helpers.ts";
+import { hierarchy as testHierarchy } from "./utils/test-data.ts";
 import HierarchyTree from "./Hierarchy";
 import { TopBar } from "./TopBar";
 import { SettingsContext } from "./SettingsContext";
@@ -17,7 +17,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import { generateTestData } from "./bigHierarchy.generator.ts";
+import { generateTestData } from "./utils/bigHierarchy.generator.ts";
 
 const testData = generateTestData(1000, 10);
 
@@ -29,7 +29,10 @@ const GridItem = styled(Paper)(({ theme }) => ({
 }));
 
 function App() {
-  const hierarchy = useMemo(() => convertToHierarchy(testData || testHierarchy), []);
+  const hierarchy = useMemo(
+    () => convertToHierarchy(testData || testHierarchy),
+    [],
+  );
 
   const [font, setFont] = useState("Roboto");
   const [fontSize, setFontSize] = useState(12);
@@ -45,7 +48,7 @@ function App() {
           fontSize: fontSize,
         },
       }),
-    [font, fontSize, isBold]
+    [font, fontSize, isBold],
   );
 
   return (

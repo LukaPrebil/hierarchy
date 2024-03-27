@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
 
 export const TopBar: React.FC = () => {
-
   return (
     <Box sx={{ flexGrow: 1, width: "100%", marginBottom: "1rem" }}>
       <AppBar position="static">
