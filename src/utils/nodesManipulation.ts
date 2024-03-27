@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import type { RootNode } from "./utils/hierarchy.helpers";
+import type { RootNode } from "./hierarchy.helpers";
 import { Theme } from "@mui/material/styles";
 
 type Nodes = d3.Selection<

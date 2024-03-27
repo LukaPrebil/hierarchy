@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { RootNode } from "./utils/hierarchy.helpers";
+import { RootNode } from "./hierarchy.helpers";
 
 export function prepareSvg(
   svgRef: React.MutableRefObject<SVGSVGElement | null>,

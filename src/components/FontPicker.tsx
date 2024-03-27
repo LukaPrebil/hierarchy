@@ -2,7 +2,7 @@ import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { FormControlLabel } from "@mui/material";
-import { useFonts } from "./useFonts";
+import { useFonts } from "../hooks/useFonts";
 
 type FontPickerProps = {
   font: string;

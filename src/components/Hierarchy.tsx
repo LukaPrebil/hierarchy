@@ -1,9 +1,9 @@
 import * as d3 from "d3";
 import { useContext, useEffect, useRef, useState } from "react";
-import { RootNode } from "./utils/hierarchy.helpers";
-import { SettingsContext } from "./SettingsContext";
+import { RootNode } from "../utils/hierarchy.helpers";
+import { SettingsContext } from "../SettingsContext";
 import { useTheme } from "@mui/material/styles";
-import { useD3Hierarchy } from "./useD3Hierarchy";
+import { useD3Hierarchy } from "../hooks/useD3Hierarchy";
 import {
   addCirclesToNodes,
   addNodeActionIcons,
@@ -12,8 +12,8 @@ import {
   createNodes,
   updateLeafNode,
   updateLeafsUnderNode,
-} from "./nodesManipulation";
-import { prepareSvg } from "./prepareBaseSVG";
+} from "../utils/nodesManipulation";
+import { prepareSvg } from "../utils/prepareBaseSVG";
 
 const format = d3.format(",.2f"); // Format the numbers to 2 decimal places
 const width = 380; // Width of the svg, 380 seems like a good width for the kind of data, but it could be calculated based on the max depth of the tree
