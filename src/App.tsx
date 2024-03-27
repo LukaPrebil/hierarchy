@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { convertToHierarchy } from "./hierarchy.helpers";
-// import { hierarchy as testHierarchy } from "./test-data";
+import { hierarchy as testHierarchy } from "./test-data";
 import HierarchyTree from "./Hierarchy";
 import { TopBar } from "./TopBar";
 import { SettingsContext } from "./SettingsContext";
@@ -19,8 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { generateTestData } from "./bigHierarchy.generator.ts";
 
-const testData = generateTestData(10000, 10);
-console.log(testData);
+const testData = generateTestData(1000, 10);
 
 const GridItem = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -30,7 +29,7 @@ const GridItem = styled(Paper)(({ theme }) => ({
 }));
 
 function App() {
-  const hierarchy = useMemo(() => convertToHierarchy(testData), []);
+  const hierarchy = useMemo(() => convertToHierarchy(testData || testHierarchy), []);
 
   const [font, setFont] = useState("Roboto");
   const [fontSize, setFontSize] = useState(12);
@@ -66,12 +65,20 @@ function App() {
         <TopBar />
         <Container maxWidth="xl">
           <Grid2 container spacing={2}>
-            <Grid2 sm={12} md={7}>
-              <GridItem>
+            <Grid2 xs={12} sm={12} md={7}>
+              <GridItem
+                sx={{
+                  "& > svg": {
+                    fontFamily: font,
+                    fontSize: fontSize,
+                    fontWeight: isBold ? "bold" : "normal",
+                  },
+                }}
+              >
                 <HierarchyTree data={hierarchy} />
               </GridItem>
             </Grid2>
-            <Grid2 sm={5} md={2}>
+            <Grid2 xs={12} sm={5} md={2}>
               <GridItem>
                 <h2>Node modifiers (legend)</h2>
                 <Divider />
@@ -88,7 +95,7 @@ function App() {
                 </List>
               </GridItem>
             </Grid2>
-            <Grid2 sm={7} md={3}>
+            <Grid2 xs={12} sm={7} md={3}>
               <GridItem>
                 <h2>Page modifiers</h2>
                 <Divider />
