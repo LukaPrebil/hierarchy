@@ -68,21 +68,13 @@ function App() {
         <TopBar />
         <Container maxWidth="xl">
           <Grid2 container spacing={2}>
-            <Grid2 xs={12} sm={12} md={7}>
+            <Grid2 xs={12} sm={5} md={2}>
               <GridItem
                 sx={{
-                  "& > svg": {
-                    fontFamily: font,
-                    fontSize: fontSize,
-                    fontWeight: isBold ? "bold" : "normal",
-                  },
+                  position: "sticky",
+                  top: "0rem",
                 }}
               >
-                <HierarchyTree data={hierarchy} />
-              </GridItem>
-            </Grid2>
-            <Grid2 xs={12} sm={5} md={2}>
-              <GridItem>
                 <h2>Node modifiers (legend)</h2>
                 <Divider />
                 <List>
@@ -99,7 +91,12 @@ function App() {
               </GridItem>
             </Grid2>
             <Grid2 xs={12} sm={7} md={3}>
-              <GridItem>
+              <GridItem
+                sx={{
+                  position: "sticky",
+                  top: "0rem",
+                }}
+              >
                 <h2>Page modifiers</h2>
                 <Divider />
                 <FormControl>
@@ -136,6 +133,19 @@ function App() {
                     label="Font Size"
                   />
                 </FormControl>
+              </GridItem>
+            </Grid2>
+            <Grid2 xs={12} sm={12} md={7}>
+              <GridItem
+                sx={{
+                  "& > svg": {
+                    fontFamily: font,
+                    fontSize: fontSize,
+                    fontWeight: isBold ? "bold" : "normal",
+                  },
+                }}
+              >
+                <HierarchyTree data={hierarchy} />
               </GridItem>
             </Grid2>
           </Grid2>
