@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { convertToHierarchy } from "./hierarchy.helpers";
-import { hierarchy as testHierarchy } from "./test-data";
+// import { hierarchy as testHierarchy } from "./test-data";
 import HierarchyTree from "./Hierarchy";
 import { TopBar } from "./TopBar";
 import { SettingsContext } from "./SettingsContext";
