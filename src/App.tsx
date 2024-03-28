@@ -19,7 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { generateTestData } from "./utils/bigHierarchy.generator.ts";
 
-const testData = generateTestData(5000, 10);
+const testData = generateTestData(10000, 10);
 
 const GridItem = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
