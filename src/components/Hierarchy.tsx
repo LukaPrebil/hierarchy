@@ -24,8 +24,14 @@ const HierarchyTree = ({ data }: { data: RootNode }) => {
   const nodes = useCreateNodes(preparedSvg, allNodes, nodeHeight);
 
   useStaticNodeData(nodes, nodeHeight);
-  useHighlightNegatives(nodes, highlightNegatives);
-  useCalculateNodesValues(svgRef, preparedSvg, nodes, root, format);
+  const numOfNegativeNodes = useCalculateNodesValues(
+    svgRef,
+    preparedSvg,
+    nodes,
+    root,
+    format,
+  );
+  useHighlightNegatives(nodes, highlightNegatives, numOfNegativeNodes);
 
   return <svg ref={svgRef} />;
 };

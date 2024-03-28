@@ -85,49 +85,30 @@ export function calculateNodesValues(
 
 type HNode = d3.HierarchyNode<RootNode>;
 
-// TODO turn this into a reducer
 export function updateLeafNode(
-  element: SVGGElement,
-  setUpdateId: React.Dispatch<React.SetStateAction<number>>,
+  operation: "skip" | "reset" | "reverse",
   clickedLeaf: HNode,
 ) {
-  updateLeaf(element, clickedLeaf);
-  setUpdateId((prev) => prev + 1);
+  return updateLeaf(operation, clickedLeaf);
 }
 
-export function updateLeafsUnderNode(
-  element: SVGGElement,
-  setUpdateId: React.Dispatch<React.SetStateAction<number>>,
-  clickedNode: HNode,
-) {
-  clickedNode.descendants().forEach((descendant) => {
-    if (descendant.children) return; // skip non-leaf nodes as their value gets calculated from children
-    updateLeaf(element, descendant);
-  });
-  setUpdateId((prev) => prev + 1);
-}
-
-// TODO take leaf.data, return new leaf.data
-function updateLeaf(element: SVGGElement, leaf: HNode) {
-  if (element.classList.contains("skip")) {
-    if (leaf.data.originalValue === undefined)
-      leaf.data.originalValue = leaf.data.value;
-    leaf.data.value = 0;
-  }
-  if (element.classList.contains("reset")) {
-    leaf.data.value = leaf.data.originalValue ?? leaf.data.value;
-    delete leaf.data.originalValue;
-  }
-  if (element.classList.contains("reverse")) {
-    if (leaf.data.originalValue === undefined)
-      leaf.data.originalValue = leaf.data.value;
-    if (!leaf.data.reversed) {
-      leaf.data.reversed = true;
+function updateLeaf(operation: "skip" | "reset" | "reverse", leaf: HNode) {
+  switch (operation) {
+    case "skip":
+      if (leaf.data.originalValue === undefined)
+        leaf.data.originalValue = leaf.data.value;
+      leaf.data.value = 0;
+      break;
+    case "reset":
+      leaf.data.value = leaf.data.originalValue ?? leaf.data.value;
+      delete leaf.data.originalValue;
+      delete leaf.data.reversed;
+      break;
+    case "reverse":
+      if (leaf.data.originalValue === undefined)
+        leaf.data.originalValue = leaf.data.value;
       console.log("reversing", leaf.data.value, -leaf.data.value!);
       leaf.data.value = -leaf.data.value!;
-    } else {
-      leaf.data.reversed = false;
-      console.log("removing flag");
-    }
   }
+  return leaf.data.index!;
 }

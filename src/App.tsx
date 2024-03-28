@@ -30,6 +30,7 @@ const GridItem = styled(Paper)(({ theme }) => ({
 
 function App() {
   const hierarchy = useMemo(
+    // () => convertToHierarchy(testHierarchy || testData),
     () => convertToHierarchy(testData || testHierarchy),
     [],
   );

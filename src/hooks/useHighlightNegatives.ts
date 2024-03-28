@@ -15,13 +15,11 @@ export function useHighlightNegatives(
       >
     | undefined,
   highlightNegatives: boolean,
+  numOfNegativeNodes: number,
 ) {
   const theme = useTheme();
   useEffect(() => {
-    console.log("useEffect negative highlights");
-    console.time("negative highlights");
     if (nodes) {
-      console.log("adding negative highlights");
       nodes
         .filter((d) => d.value! < 0)
         .attr("fill", (d) => {
@@ -34,10 +32,10 @@ export function useHighlightNegatives(
           }
         });
     }
-    console.timeEnd("negative highlights");
   }, [
     highlightNegatives,
     nodes,
+    numOfNegativeNodes,
     theme.palette.error.main,
     theme.palette.text.primary,
     theme.palette.text.secondary,
