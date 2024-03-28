@@ -53,12 +53,6 @@ function App() {
   return (
     <SettingsContext.Provider
       value={{
-        font,
-        setFont,
-        fontSize,
-        setFontSize,
-        isBold,
-        setIsBold,
         highlightNegatives,
         setHighlightNegatives,
       }}
