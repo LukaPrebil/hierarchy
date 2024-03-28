@@ -20,17 +20,15 @@ export function useHighlightNegatives(
   const theme = useTheme();
   useEffect(() => {
     if (nodes) {
-      nodes
-        .filter((d) => d.value! < 0)
-        .attr("fill", (d) => {
-          if (highlightNegatives) {
-            return theme.palette.error.main;
-          } else if (d.children) {
-            return theme.palette.text.secondary;
-          } else {
-            return theme.palette.text.primary;
-          }
-        });
+      nodes.attr("fill", (d) => {
+        if (highlightNegatives && d.value! < 0) {
+          return theme.palette.error.main;
+        } else if (d.children) {
+          return theme.palette.text.secondary;
+        } else {
+          return theme.palette.text.primary;
+        }
+      });
     }
   }, [
     highlightNegatives,
