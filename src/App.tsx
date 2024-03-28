@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState, useTransition } from "react";
 import { convertToHierarchy } from "./utils/hierarchy.helpers.ts";
 import { hierarchy as testHierarchy } from "./utils/test-data.ts";
 import HierarchyTree from "./components/Hierarchy.tsx";
@@ -35,26 +35,35 @@ function App() {
     [],
   );
 
+  const [, startTransition] = useTransition();
+
   const [font, setFont] = useState("Roboto");
+  const fontDeffered = useDeferredValue(font);
+
   const [fontSize, setFontSize] = useState(12);
+  const fontSizeDeffered = useDeferredValue(fontSize);
+
   const [isBold, setIsBold] = useState(false);
+  const isBoldDeffered = useDeferredValue(isBold);
+
   const [highlightNegatives, setHighlightNegatives] = useState(false);
+  const highlightNegativesDeffered = useDeferredValue(highlightNegatives);
 
   const theme = useMemo(
     () =>
       createTheme({
         typography: {
-          fontFamily: font,
-          fontWeightBold: isBold ? "bold" : "normal",
+          fontFamily: fontDeffered,
+          fontWeightBold: isBoldDeffered ? "bold" : "normal",
         },
       }),
-    [font, isBold],
+    [fontDeffered, isBoldDeffered],
   );
 
   return (
     <SettingsContext.Provider
       value={{
-        highlightNegatives,
+        highlightNegatives: highlightNegativesDeffered,
         setHighlightNegatives,
       }}
     >
@@ -99,7 +108,9 @@ function App() {
                       <Switch
                         value={highlightNegatives}
                         onChange={(e) =>
-                          setHighlightNegatives(e.target.checked)
+                          startTransition(() =>
+                            setHighlightNegatives(e.target.checked),
+                          )
                         }
                       />
                     }
@@ -109,12 +120,17 @@ function App() {
                     control={
                       <Switch
                         value={isBold}
-                        onChange={(e) => setIsBold(e.target.checked)}
+                        onChange={(e) =>
+                          startTransition(() => setIsBold(e.target.checked))
+                        }
                       />
                     }
                     label="Bold"
                   />
-                  <FontPicker font={font} setFont={setFont} />
+                  <FontPicker
+                    font={font}
+                    setFont={(font) => startTransition(() => setFont(font))}
+                  />
                   <FormControlLabel
                     control={
                       <TextField
@@ -122,7 +138,11 @@ function App() {
                         color="secondary"
                         value={fontSize}
                         inputProps={{ min: 10, max: 15 }}
-                        onChange={(e) => setFontSize(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          startTransition(() =>
+                            setFontSize(parseInt(e.target.value)),
+                          )
+                        }
                       />
                     }
                     label="Font Size"
@@ -134,9 +154,9 @@ function App() {
               <GridItem
                 sx={{
                   "& > svg": {
-                    fontFamily: font,
-                    fontSize: fontSize,
-                    fontWeight: isBold ? "bold" : "normal",
+                    fontFamily: fontDeffered,
+                    fontSize: fontSizeDeffered,
+                    fontWeight: isBoldDeffered ? "bold" : "normal",
                   },
                 }}
               >
