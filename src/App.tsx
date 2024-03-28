@@ -45,10 +45,9 @@ function App() {
         typography: {
           fontFamily: font,
           fontWeightBold: isBold ? "bold" : "normal",
-          fontSize: fontSize,
         },
       }),
-    [font, fontSize, isBold],
+    [font, isBold],
   );
 
   return (
