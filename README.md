@@ -14,13 +14,9 @@ The page is responsive, running on a single column on mobile devices and on mult
 
 ## Development decisions
 
-The reason I chose Vite and MUI is because I've heard good things and wanted to try them out. I've also heard that Vite is faster than Create React App, which I've used before. I've never used D3.js before, so the code is somewhat based on the examples I found online.
+The reason I chose Vite and MUI is because I've heard good things and wanted to try them out. I've also heard that Vite is faster than Create React App, which I've used before. I've never used D3.js before, so the code is loosely based on the examples I found online.
 
-It is probably not the most efficient way to do it, but it works in the limited time I had to work on this project.
-If I started from scratch, I would probably use a different approach, skip React alltogether. If I implemented the same project in vanilla TS, I could more easily recalculate only portions of the node tree, and not have to rerender the entire SVG every time.
-With React, I had to use an effect to recalculate the tree and rerender the svg every time the data changed, which is not the most efficient way to do it.
-
-It seems to work reasonably well with a few thousand nodes, but lags on 10k+ nodes. For large datasets, some kind of virtualization would be needed, but I ran out of time to implement that.
+It seems to work reasonably well with a few thousand nodes, but scrolling can lag on 10k+ nodes. For large datasets, some kind of virtualization would be needed, but I ran out of time to implement that.
 
 ## Development
 
