@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import type { RootNode } from "./hierarchy.helpers";
-import { Theme } from "@mui/material/styles";
 
 type Nodes = d3.Selection<
   SVGGElement | null,
@@ -9,7 +8,7 @@ type Nodes = d3.Selection<
   unknown
 >;
 
-type FormatFn = (
+export type FormatFn = (
   n:
     | number
     | {
@@ -73,25 +72,15 @@ export function calculateNodesValues(
   nodes: Nodes,
   root: d3.HierarchyNode<RootNode>,
   format: FormatFn,
-  highlightNegatives: boolean,
-  theme: Theme,
 ) {
   nodes
     .append("text")
+    .attr("class", "value")
     .attr("dy", "0.32em")
     .attr("x", 280)
     .attr("text-anchor", "end")
     .data(root.sum((d) => d.value!))
-    .text((d) => format(d.value!))
-    .attr("fill", (d) => {
-      if (highlightNegatives && d.value! < 0) {
-        return theme.palette.error.main;
-      } else if (d.children) {
-        return theme.palette.text.secondary;
-      } else {
-        return theme.palette.text.primary;
-      }
-    });
+    .text((d) => format(d.value!));
 }
 
 type HNode = d3.HierarchyNode<RootNode>;

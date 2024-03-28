@@ -1,59 +1,31 @@
 import * as d3 from "d3";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { RootNode } from "../utils/hierarchy.helpers";
 import { SettingsContext } from "../SettingsContext";
-import { useTheme } from "@mui/material/styles";
 import { useD3Hierarchy } from "../hooks/useD3Hierarchy";
-import {
-  addCirclesToNodes,
-  addNodeActionIcons,
-  addNodeName,
-  calculateNodesValues,
-  createNodes,
-  updateLeafNode,
-  updateLeafsUnderNode,
-} from "../utils/nodesManipulation";
-import { prepareSvg } from "../utils/prepareBaseSVG";
+import { usePreparedSvg } from "../hooks/usePreparedSvg";
+import { useCreateNodes } from "../hooks/useCreateNodes";
+import { useStaticNodeData } from "../hooks/useStaticNodeData";
+import { useHighlightNegatives } from "../hooks/useHighlightNegatives";
+import { useCalculateNodesValues } from "../hooks/useCalculateNodesValues";
 
 const format = d3.format(",.2f"); // Format the numbers to 2 decimal places
 const width = 380; // Width of the svg, 380 seems like a good width for the kind of data, but it could be calculated based on the max depth of the tree
+const nodeHeight = 25; // Max font size 15 + 10 padding
 
 const HierarchyTree = ({ data }: { data: RootNode }) => {
+  const { highlightNegatives } = useContext(SettingsContext);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const theme = useTheme();
-  const { fontSize, highlightNegatives } = useContext(SettingsContext);
   const { root, allNodes } = useD3Hierarchy(data);
-
-  const nodeHeight = fontSize + 10;
   const height = (allNodes.length + 1) * nodeHeight;
-  const [updateId, setUpdateId] = useState(0);
 
-  useEffect(() => {
-    const svg = prepareSvg(svgRef, root, { width, height, nodeHeight });
-    console.log("Drawing tree", allNodes);
-    svg.selectAll("g").filter("*:not(#links)").remove(); // Cleanup all the data nodes between renders
+  const preparedSvg = usePreparedSvg(svgRef, root, width, height, nodeHeight);
+  const nodes = useCreateNodes(preparedSvg, allNodes, nodeHeight);
 
-    const nodes = createNodes(svg, allNodes, nodeHeight);
-    addCirclesToNodes(nodes, nodeHeight);
-    addNodeName(nodes, nodeHeight);
-    addNodeActionIcons(nodes, nodeHeight);
-    calculateNodesValues(nodes, root, format, highlightNegatives, theme);
-
-    nodes.on("click", (event: PointerEvent, d) => {
-      event.preventDefault();
-      console.log(updateId);
-      const nodeIsLeaf = !d.children;
-      const element = event.target as SVGGElement;
-      if (nodeIsLeaf) {
-        updateLeafNode(element, setUpdateId, d);
-      } else {
-        updateLeafsUnderNode(element, setUpdateId, d);
-      }
-    });
-
-    svgRef.current = svg.node();
-  }, [allNodes, height, highlightNegatives, nodeHeight, root, theme, updateId]);
+  useStaticNodeData(nodes, nodeHeight);
+  useHighlightNegatives(nodes, highlightNegatives);
+  useCalculateNodesValues(svgRef, preparedSvg, nodes, root, format);
 
   return <svg ref={svgRef} />;
 };

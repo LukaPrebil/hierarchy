@@ -19,7 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { generateTestData } from "./utils/bigHierarchy.generator.ts";
 
-const testData = generateTestData(2000, 10);
+const testData = generateTestData(5000, 10);
 
 const GridItem = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -111,7 +111,6 @@ function App() {
                     }
                     label="Highlight negatives"
                   />
-                  <FontPicker font={font} setFont={setFont} />
                   <FormControlLabel
                     control={
                       <Switch
@@ -121,12 +120,14 @@ function App() {
                     }
                     label="Bold"
                   />
+                  <FontPicker font={font} setFont={setFont} />
                   <FormControlLabel
                     control={
                       <TextField
                         type="number"
                         color="secondary"
                         value={fontSize}
+                        inputProps={{ min: 10, max: 15 }}
                         onChange={(e) => setFontSize(parseInt(e.target.value))}
                       />
                     }
