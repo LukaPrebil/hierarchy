@@ -20,6 +20,7 @@ export const FontPicker: React.FC<FontPickerProps> = ({ font, setFont }) => {
           <Select
             id="font-select"
             value={font}
+            sx={{ marginRight: "1rem" }}
             onChange={(e) => setFont(e.target.value)}
           >
             {[...fonts].map((font) => (
